@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Post;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -51,5 +52,15 @@ class User extends Authenticatable
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class);
+    }
+
+    /**
+     * Get all of the posts for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
     }
 }
