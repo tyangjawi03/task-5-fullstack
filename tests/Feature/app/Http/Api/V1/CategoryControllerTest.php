@@ -2,9 +2,10 @@
 
 namespace Tests\Feature\app\Http\Api\V1;
 
-use App\Models\Category;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Category;
+use App\Http\Middleware\Authenticate;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -23,7 +24,7 @@ class CategoryControllerTest extends TestCase
             'email' => 'dummy@email.test'
         ]);
 
-        $this->withoutMiddleware();
+        $this->withoutMiddleware(Authenticate::class);
     }
 
     /** @test */
@@ -43,16 +44,29 @@ class CategoryControllerTest extends TestCase
     /** @test */
     public function user_can_create_a_category()
     {
-        $dummyData = ['name' => $this->faker->word()];
+        $categoryName = ['name' => $this->faker->word()];
 
         $response = $this->actingAs($this->user)
-                        ->post(route('categories.store'), $dummyData);
+                        ->post(route('categories.store'), $categoryName);
 
-        $this->assertDatabaseHas('categories', $dummyData);
+        $this->assertDatabaseHas('categories', $categoryName);
         $response->assertCreated();
-        $response->assertJsonFragment($dummyData);
+        $response->assertJsonFragment($categoryName);
 
     }
 
+    /** @test */
+    public function user_can_view_a_category()
+    {
+        $category = Category::factory()->create();
+
+        $response = $this->actingAs($this->user)
+                        ->get(route('categories.show', $category));
+
+        $response->assertOk();
+        $response->assertJsonFragment([
+            'name' => $category->name
+        ]);
+    }
 
 }
