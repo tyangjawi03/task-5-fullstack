@@ -69,4 +69,22 @@ class CategoryControllerTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function user_can_update_a_category()
+    {
+        $categoryNameOld = ['name' => $this->faker->word()];
+        $categoryNameNew = ['name' => $this->faker->word()];
+
+        $category = $this->user->categories()->create($categoryNameOld);
+
+        $response = $this->actingAs($this->user)
+                        ->put(route('categories.update', $category), $categoryNameNew);
+
+        $this->assertDatabaseMissing('categories', $categoryNameOld);
+        $this->assertDatabaseHas('categories', $categoryNameNew);
+
+        $response->assertOk();
+        $response->assertJsonFragment($categoryNameNew);
+    }
+
 }
