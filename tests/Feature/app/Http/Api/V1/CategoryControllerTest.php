@@ -40,4 +40,19 @@ class CategoryControllerTest extends TestCase
         ]);
     }
 
+    /** @test */
+    public function user_can_create_a_category()
+    {
+        $dummyData = ['name' => $this->faker->word()];
+
+        $response = $this->actingAs($this->user)
+                        ->post(route('categories.store'), $dummyData);
+
+        $this->assertDatabaseHas('categories', $dummyData);
+        $response->assertCreated();
+        $response->assertJsonFragment($dummyData);
+
+    }
+
+
 }
