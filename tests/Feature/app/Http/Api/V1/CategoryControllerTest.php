@@ -87,4 +87,19 @@ class CategoryControllerTest extends TestCase
         $response->assertJsonFragment($categoryNameNew);
     }
 
+    /** @test */
+    public function user_can_delete_a_category()
+    {
+        $categoryName = ['name' => $this->faker->word()];
+
+        $category = $this->user->categories()->create($categoryName);
+
+        $response = $this->actingAs($this->user)
+                        ->delete(route('categories.destroy', $category));
+
+        $this->assertDatabaseMissing('categories', $categoryName);
+
+        $response->assertOk();
+    }
+
 }
