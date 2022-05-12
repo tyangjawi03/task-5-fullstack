@@ -19,5 +19,6 @@ Route::apiResources([
     'categories' => CategoryController::class,
     'posts' => PostController::class
 ], [
-    'middleware' => 'auth:api'
+    'middleware' => 'auth:api',
+    'as' => 'api'
 ]);
