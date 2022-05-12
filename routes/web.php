@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +25,7 @@ Route::middleware('auth')
     ->except([
         'show'
     ]);
+
+
+Route::middleware('auth')
+    ->resource('posts', PostController::class);
