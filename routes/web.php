@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,4 +18,14 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::redirect('', 'posts', 301);
+
+Route::middleware('auth')
+    ->resource('categories', CategoryController::class)
+    ->except([
+        'show'
+    ]);
+
+
+Route::middleware('auth')
+    ->resource('posts', PostController::class);

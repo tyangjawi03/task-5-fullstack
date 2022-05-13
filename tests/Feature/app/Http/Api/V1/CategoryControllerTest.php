@@ -33,7 +33,7 @@ class CategoryControllerTest extends TestCase
         $categories = Category::factory(5)->create();
 
         $response = $this->actingAs($this->user)
-                        ->get(route('categories.index'));
+                        ->get(route('api.categories.index'));
 
         $response->assertOk();
         $response->assertJsonFragment([
@@ -47,7 +47,7 @@ class CategoryControllerTest extends TestCase
         $categoryName = ['name' => $this->faker->word()];
 
         $response = $this->actingAs($this->user)
-                        ->post(route('categories.store'), $categoryName);
+                        ->post(route('api.categories.store'), $categoryName);
 
         $this->assertDatabaseHas('categories', $categoryName);
         $response->assertCreated();
@@ -61,7 +61,7 @@ class CategoryControllerTest extends TestCase
         $category = Category::factory()->create();
 
         $response = $this->actingAs($this->user)
-                        ->get(route('categories.show', $category));
+                        ->get(route('api.categories.show', $category));
 
         $response->assertOk();
         $response->assertJsonFragment([
@@ -78,7 +78,7 @@ class CategoryControllerTest extends TestCase
         $category = $this->user->categories()->create($categoryNameOld);
 
         $response = $this->actingAs($this->user)
-                        ->put(route('categories.update', $category), $categoryNameNew);
+                        ->put(route('api.categories.update', $category), $categoryNameNew);
 
         $this->assertDatabaseMissing('categories', $categoryNameOld);
         $this->assertDatabaseHas('categories', $categoryNameNew);
@@ -95,7 +95,7 @@ class CategoryControllerTest extends TestCase
         $category = $this->user->categories()->create($categoryName);
 
         $response = $this->actingAs($this->user)
-                        ->delete(route('categories.destroy', $category));
+                        ->delete(route('api.categories.destroy', $category));
 
         $this->assertDatabaseMissing('categories', $categoryName);
 
