@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Models\Category;
+use Illuminate\Support\Str;
+use App\Http\Requests\StorePostRequest;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdatePostRequest;
 
 class PostController extends Controller
 {
@@ -27,7 +30,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('post.create', [
+            'categories' => Category::orderBy('name', "ASC")->get()
+        ]);
     }
 
     /**
@@ -38,7 +43,23 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        //
+        $file = $request->file('image');
+        $fileName = Str::slug($request->title, '-') . '-' . $file->hashName();
+
+        if (!$file->storeAs('public', $fileName)) {
+            return redirect()->back()->withErrors([
+                'image' => 'Can not store image on server'
+            ]);
+        }
+
+        $post = auth()->user()->posts()->create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'category_id' => $request->category,
+            'image' => $fileName
+        ]);
+
+        return redirect()->route('posts.show', ['post' => $post]);
     }
 
     /**
@@ -60,7 +81,10 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('post.edit', [
+            'post' => $post,
+            'categories' => Category::orderBy('name', "ASC")->get()
+        ]);
     }
 
     /**
@@ -72,7 +96,27 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        $fileName = $post->image;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = Str::slug($request->title, '-') . '-' . $file->hashName();
+
+            if (!$file->storeAs('public', $fileName)) {
+                return redirect()->back()->withErrors([
+                    'image' => 'Can not store image on server'
+                ]);
+            }
+        }
+
+        $post = auth()->user()->posts()->create([
+            'title' => $request->title,
+            'content' => $request->content,
+            'category_id' => $request->category,
+            'image' => $fileName
+        ]);
+
+        return redirect()->route('posts.show', ['post' => $post]);
     }
 
     /**
@@ -83,6 +127,10 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $this->authorize('delete', $post);
+
+        $post->delete();
+
+        return redirect()->route('posts.index');
     }
 }

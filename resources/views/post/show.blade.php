@@ -13,14 +13,15 @@
                     </div>
 
                     @isset($post->image)
-                        <img class="card-img-top" src="{{ $post->image }}" alt="{{ $post->title }}" />
+                        <img class="card-img-top" src="{{ asset('storage/' . $post->image) }}" alt="{{ $post->title }}" />
                     @endisset
 
                     <div class="card-body">
 
                         <div class="row mb-4">
-                            <div class="col-12">
-                                Author : <span class="fst-italic">{{ $post->user->name }}</span>
+                            <div class="col-12 d-flex justify-content-between">
+                                <span class="fst-italic">Author : {{ $post->user->name }}</span>
+                                <span class="badge bg-success badge-pill">{{ $post->category->name }}</span>
                             </div>
                         </div>
 

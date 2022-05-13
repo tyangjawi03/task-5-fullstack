@@ -18,7 +18,7 @@ use App\Http\Controllers\PostController;
 
 Auth::routes();
 
-Route::get('', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::redirect('', 'posts', 301);
 
 Route::middleware('auth')
     ->resource('categories', CategoryController::class)

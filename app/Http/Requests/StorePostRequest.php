@@ -25,7 +25,7 @@ class StorePostRequest extends FormRequest
     public function rules()
     {
         return [
-            'category_id' => 'exists:categories,id',
+            'category' => 'exists:categories,id',
             'title' => 'required|string|min:2|max:64',
             'content' => 'required|string|min:2|max:256',
             'image' => 'file|mimetypes:image/jpg,image/png',
