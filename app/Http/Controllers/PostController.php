@@ -43,13 +43,17 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $file = $request->file('image');
-        $fileName = Str::slug($request->title, '-') . '-' . $file->hashName();
+        $fileName = '';
 
-        if (!$file->storeAs('public', $fileName)) {
-            return redirect()->back()->withErrors([
-                'image' => 'Can not store image on server'
-            ]);
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = Str::slug($request->title, '-') . '-' . $file->hashName();
+
+            if (!$file->storeAs('public', $fileName)) {
+                return redirect()->back()->withErrors([
+                    'image' => 'Can not store image on server'
+                ]);
+            }
         }
 
         $post = auth()->user()->posts()->create([
@@ -109,7 +113,7 @@ class PostController extends Controller
             }
         }
 
-        $post = auth()->user()->posts()->create([
+        $post = $post->update([
             'title' => $request->title,
             'content' => $request->content,
             'category_id' => $request->category,
