@@ -7,9 +7,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Repositories\Category\CategoryRepository;
 
 class CategoryController extends Controller
 {
+    protected $repository;
+
+    public function __construct(CategoryRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +25,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return CategoryResource::collection(Category::all());
+        return CategoryResource::collection(
+            $this->repository->all()
+        );
     }
 
     /**
@@ -28,7 +38,12 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        $category = auth()->user()->categories()->create($request->validated());
+        $category = $this->repository
+                        ->storeCategory(
+                            auth()->user(),
+                            $request->validated()
+                        );
+
         return new CategoryResource($category);
     }
 
@@ -52,11 +67,8 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        if($category->update($request->validated())) {
-            return new CategoryResource($category);
-        }
-
-        return response()->json(['message' => 'Terjadi Kesalahan'], 400);
+        $category = $this->repository->updateCategory($category, $request->validated());
+        return new CategoryResource($category);
     }
 
     /**
@@ -69,7 +81,7 @@ class CategoryController extends Controller
     {
         $this->authorize('delete', $category);
 
-        $category->delete();
+        $this->repository->deleteCategory($category);
         return response()->json('OK');
     }
 }

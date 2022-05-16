@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
-use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Repositories\Category\CategoryRepository;
 
 class CategoryController extends Controller
 {
+    protected $repository;
+
+    public function __construct(CategoryRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +24,7 @@ class CategoryController extends Controller
     public function index()
     {
         return view('category.index', [
-            'categories' => Category::latest('updated_at')->paginate(5)
+            'categories' => $this->repository->all()
         ]);
     }
 
@@ -39,7 +46,12 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        auth()->user()->categories()->create($request->validated());
+        $this->repository
+            ->storeCategory(
+                auth()->user(),
+                $request->validated()
+            );
+
         return redirect()->route('categories.index');
     }
 
@@ -63,7 +75,7 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category->update($request->validated());
+        $this->repository->updateCategory($category, $request->validated());
         return redirect()->route('categories.index');
     }
 
@@ -77,7 +89,7 @@ class CategoryController extends Controller
     {
         $this->authorize('delete', $category);
 
-        $category->delete();
+        $this->repository->deleteCategory($category);
 
         return redirect()->route('categories.index');
     }

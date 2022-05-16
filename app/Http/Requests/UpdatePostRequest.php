@@ -25,7 +25,7 @@ class UpdatePostRequest extends FormRequest
     {
         return [
             'title' => 'required|string|min:2|max:64',
-            'content' => 'required|string|min:2|max:256',
+            'content' => 'required|string|min:2|max:1024',
             'image' => 'file|mimetypes:image/jpg,image/png',
         ];
     }

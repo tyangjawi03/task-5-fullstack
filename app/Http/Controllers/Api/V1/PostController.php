@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Api\V1;
 use App\Models\Post;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\PostCollection;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
-use App\Http\Resources\PostCollection;
+use App\Repositories\Post\PostRepository;
 
 class PostController extends Controller
 {
+    protected $repository;
+
+    public function __construct(PostRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +26,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        return new PostCollection(Post::paginate());
+        return new PostCollection($this->repository->all());
     }
 
     /**
@@ -29,7 +37,12 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $post = auth()->user()->posts()->create($request->validated());
+        $post = $this->repository
+                    ->storePost(
+                        auth()->user(),
+                        $request
+                    );
+
         return new PostResource($post);
     }
 
@@ -53,7 +66,7 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update($request->validated());
+        $post = $this->repository->updatePost($post, $request);
         return new PostResource($post);
     }
 
@@ -67,7 +80,7 @@ class PostController extends Controller
     {
         $this->authorize('delete', $post);
 
-        $post->delete();
+        $this->repository->deletePost($post);
         return response()->json('OK');
     }
 }
