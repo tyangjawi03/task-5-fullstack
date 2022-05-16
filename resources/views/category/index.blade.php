@@ -11,7 +11,9 @@
                             {{ __('Categories') }}
                         </div>
 
-                        <a href="{{ route('categories.create') }}" class="btn btn-primary btn-sm">Add Category</a>
+                        @can('create', App\Models\Category::class)
+                            <a href="{{ route('categories.create') }}" class="btn btn-primary btn-sm">Add Category</a>
+                        @endcan
                     </div>
 
                     <div class="card-body">
@@ -20,7 +22,7 @@
                             @foreach ($categories as $key => $category)
                                 <li class="list-group-item d-flex justify-content-between align-items-start">
                                     <div class="fw-bold">
-                                        {{ $categories->firstItem() + $key}}.
+                                        {{ $categories->firstItem() + $key }}.
                                     </div>
                                     <div class="ms-2 me-auto">
                                         <div class="fw-bold">
@@ -30,19 +32,23 @@
                                     </div>
 
                                     <div class="float-end d-flex w-30 gap-3">
-                                        <a href="{{ route('categories.edit', ['category' => $category]) }}"
-                                            class="btn btn-warning btn-sm">
-                                            Edit
-                                        </a>
-                                        <form action="{{ route('categories.destroy', ['category' => $category]) }}"
-                                            method="POST">
-                                            @method('Delete')
-                                            @csrf
+                                        @can('update', $category)
+                                            <a href="{{ route('categories.edit', ['category' => $category]) }}"
+                                                class="btn btn-warning btn-sm">
+                                                Edit
+                                            </a>
+                                        @endcan
+                                        @can('delete', $category)
+                                            <form action="{{ route('categories.destroy', ['category' => $category]) }}"
+                                                method="POST">
+                                                @method('Delete')
+                                                @csrf
 
-                                            <button class="btn btn-danger btn-sm">
-                                                Delete
-                                            </button>
-                                        </form>
+                                                <button class="btn btn-danger btn-sm">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        @endcan
                                     </div>
                                 </li>
                             @endforeach

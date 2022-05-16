@@ -40,18 +40,22 @@
                     </div>
 
                     <div class="card-footer d-flex justify-content-between">
-                        <form action="{{ route('posts.destroy', ['post' => $post]) }}"
-                            method="POST">
-                            @method('Delete')
-                            @csrf
+                        @can('delete', $post)
+                            <form action="{{ route('posts.destroy', ['post' => $post]) }}" method="POST">
+                                @method('Delete')
+                                @csrf
 
-                            <button class="btn btn-danger btn-sm">
-                                Delete
-                            </button>
-                        </form>
-                        <a class="btn btn-warning btn-sm" href="{{ route('posts.edit', ['post' => $post]) }}">
-                            Edit
-                        </a>
+                                <button class="btn btn-danger btn-sm">
+                                    Delete
+                                </button>
+                            </form>
+                        @endcan
+
+                        @can('update', $post)
+                            <a class="btn btn-warning btn-sm" href="{{ route('posts.edit', ['post' => $post]) }}">
+                                Edit
+                            </a>
+                        @endcan
                     </div>
                 </div>
 

@@ -4,7 +4,9 @@
     <div class="container">
         <div class="row justify-content-center mb-4">
             <div class="col-md-6 d-flex justify-content-end gap-4">
-                <a href="{{ route('posts.create') }}" class="btn btn-primary">Add Post</a>
+                @can('create', App\Models\Post::class)
+                    <a href="{{ route('posts.create') }}" class="btn btn-primary">Add Post</a>
+                @endcan
                 <a href="{{ route('categories.index') }}" class="btn btn-outline-primary">Categories</a>
             </div>
         </div>
