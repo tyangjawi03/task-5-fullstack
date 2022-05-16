@@ -6,11 +6,18 @@ use App\Models\Post;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use App\Http\Requests\StorePostRequest;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdatePostRequest;
+use App\Repositories\Post\PostRepository;
 
 class PostController extends Controller
 {
+    protected $repository;
+
+    public function __construct(PostRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,7 +26,7 @@ class PostController extends Controller
     public function index()
     {
         return view('post.index', [
-            'posts' => Post::latest()->paginate(5)
+            'posts' => $this->repository->all()
         ]);
     }
 
@@ -43,25 +50,11 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $fileName = '';
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = Str::slug($request->title, '-') . '-' . $file->hashName();
-
-            if (!$file->storeAs('public', $fileName)) {
-                return redirect()->back()->withErrors([
-                    'image' => 'Can not store image on server'
-                ]);
-            }
-        }
-
-        $post = auth()->user()->posts()->create([
-            'title' => $request->title,
-            'content' => $request->content,
-            'category_id' => $request->category,
-            'image' => $fileName
-        ]);
+        $post = $this->repository
+                    ->storePost(
+                        auth()->user(),
+                        $request
+                    );
 
         return redirect()->route('posts.show', ['post' => $post]);
     }
@@ -100,26 +93,7 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $fileName = $post->image;
-
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = Str::slug($request->title, '-') . '-' . $file->hashName();
-
-            if (!$file->storeAs('public', $fileName)) {
-                return redirect()->back()->withErrors([
-                    'image' => 'Can not store image on server'
-                ]);
-            }
-        }
-
-        $post = $post->update([
-            'title' => $request->title,
-            'content' => $request->content,
-            'category_id' => $request->category,
-            'image' => $fileName
-        ]);
-
+        $post = $this->repository->updatePost($post, $request);
         return redirect()->route('posts.show', ['post' => $post]);
     }
 
@@ -133,7 +107,7 @@ class PostController extends Controller
     {
         $this->authorize('delete', $post);
 
-        $post->delete();
+        $this->repository->deletePost($post);
 
         return redirect()->route('posts.index');
     }

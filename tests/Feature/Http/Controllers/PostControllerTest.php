@@ -6,8 +6,11 @@ use Tests\TestCase;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Category;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Repositories\Category\CategoryRepository;
+use App\Repositories\Post\EloquentPostRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Repositories\Category\EloquentCategoryRepository;
 
 class PostControllerTest extends TestCase
 {
@@ -23,6 +26,9 @@ class PostControllerTest extends TestCase
 
         $this->user = User::factory()->create();
         $this->categories = Category::factory(5)->create();
+
+        $this->app->bind(CategoryRepository::class, EloquentCategoryRepository::class);
+        $this->app->bind(PostRepository::class, EloquentPostRepository::class);
     }
 
 

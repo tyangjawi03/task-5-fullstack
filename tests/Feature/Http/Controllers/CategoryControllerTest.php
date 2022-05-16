@@ -5,8 +5,12 @@ namespace Tests\Feature\Http\Controllers;
 use App\Models\Category;
 use Tests\TestCase;
 use App\Models\User;
+use App\Repositories\Category\CategoryRepository;
+use App\Repositories\Category\EloquentCategoryRepository;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
+use Mockery\MockInterface;
 
 class CategoryControllerTest extends TestCase
 {
@@ -20,6 +24,8 @@ class CategoryControllerTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create();
+
+        $this->app->bind(CategoryRepository::class, EloquentCategoryRepository::class);
     }
 
     /** @test */

@@ -1,12 +1,14 @@
 <?php
 
-namespace Tests\Feature\Http\Api\V1;
+namespace Tests\Feature\Http\Controllers\Api\V1;
 
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Category;
 use App\Http\Middleware\Authenticate;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Repositories\Category\CategoryRepository;
+use App\Repositories\Category\EloquentCategoryRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CategoryControllerTest extends TestCase
@@ -25,6 +27,8 @@ class CategoryControllerTest extends TestCase
         ]);
 
         $this->withoutMiddleware(Authenticate::class);
+
+        $this->app->bind(CategoryRepository::class, EloquentCategoryRepository::class);
     }
 
     /** @test */
