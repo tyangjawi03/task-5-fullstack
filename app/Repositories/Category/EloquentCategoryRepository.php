@@ -2,9 +2,8 @@
 
 namespace App\Repositories\Category;
 
-use App\Models\User;
 use App\Models\Category;
-use App\Repositories\Category\CategoryRepository;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EloquentCategoryRepository implements CategoryRepository
@@ -22,6 +21,7 @@ class EloquentCategoryRepository implements CategoryRepository
     public function updateCategory(Category $category, $array): Category
     {
         $category->update($array);
+
         return $category;
     }
 

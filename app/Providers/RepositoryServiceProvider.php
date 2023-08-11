@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Repositories\Post\PostRepository;
 use App\Repositories\Category\CategoryRepository;
-use App\Repositories\Post\EloquentPostRepository;
 use App\Repositories\Category\EloquentCategoryRepository;
+use App\Repositories\Post\EloquentPostRepository;
+use App\Repositories\Post\PostRepository;
+use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
 {

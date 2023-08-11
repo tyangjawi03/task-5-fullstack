@@ -2,14 +2,14 @@
 
 namespace Tests\Feature\Http\Controllers\Api\V1;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Category;
 use App\Http\Middleware\Authenticate;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\Models\Category;
+use App\Models\User;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Category\EloquentCategoryRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CategoryControllerTest extends TestCase
 {
@@ -23,7 +23,7 @@ class CategoryControllerTest extends TestCase
         parent::setUp();
 
         $this->user = User::factory()->create([
-            'email' => 'dummy@email.test'
+            'email' => 'dummy@email.test',
         ]);
 
         $this->withoutMiddleware(Authenticate::class);
@@ -41,7 +41,7 @@ class CategoryControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonFragment([
-            'name' => $categories->random()->name
+            'name' => $categories->random()->name,
         ]);
     }
 
@@ -56,7 +56,6 @@ class CategoryControllerTest extends TestCase
         $this->assertDatabaseHas('categories', $categoryName);
         $response->assertCreated();
         $response->assertJsonFragment($categoryName);
-
     }
 
     /** @test */
@@ -69,7 +68,7 @@ class CategoryControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonFragment([
-            'name' => $category->name
+            'name' => $category->name,
         ]);
     }
 
@@ -105,5 +104,4 @@ class CategoryControllerTest extends TestCase
 
         $response->assertOk();
     }
-
 }

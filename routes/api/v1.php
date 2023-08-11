@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\PostController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +17,8 @@ use App\Http\Controllers\Api\V1\CategoryController;
 
 Route::apiResources([
     'categories' => CategoryController::class,
-    'posts' => PostController::class
+    'posts' => PostController::class,
 ], [
     'middleware' => 'auth:api',
-    'as' => 'api'
+    'as' => 'api',
 ]);

@@ -19,7 +19,7 @@ class CategoryFactory extends Factory
     {
         return [
             'user_id' => User::all()->random()->id,
-            'name' => $this->faker->word()
+            'name' => $this->faker->word(),
         ];
     }
 }

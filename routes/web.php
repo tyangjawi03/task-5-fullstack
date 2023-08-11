@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +23,8 @@ Route::redirect('', 'posts', 301);
 Route::middleware('auth')
     ->resource('categories', CategoryController::class)
     ->except([
-        'show'
+        'show',
     ]);
-
 
 Route::middleware('auth')
     ->resource('posts', PostController::class);

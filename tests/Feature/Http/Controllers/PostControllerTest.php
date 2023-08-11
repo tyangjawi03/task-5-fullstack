@@ -2,15 +2,15 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use Tests\TestCase;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\Category;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Repositories\Category\CategoryRepository;
+use App\Repositories\Category\EloquentCategoryRepository;
 use App\Repositories\Post\EloquentPostRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Repositories\Category\EloquentCategoryRepository;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class PostControllerTest extends TestCase
 {
@@ -18,6 +18,7 @@ class PostControllerTest extends TestCase
     use WithFaker;
 
     protected $user;
+
     protected $categories;
 
     protected function setUp(): void
@@ -30,7 +31,6 @@ class PostControllerTest extends TestCase
         $this->app->bind(CategoryRepository::class, EloquentCategoryRepository::class);
         $this->app->bind(PostRepository::class, EloquentPostRepository::class);
     }
-
 
     /** @test */
     public function user_can_view_posts_list()
@@ -65,7 +65,7 @@ class PostControllerTest extends TestCase
         $data = [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->sentence(24),
-            'category' => $this->categories->random()->id
+            'category' => $this->categories->random()->id,
         ];
 
         $response = $this->actingAs($this->user)
@@ -87,13 +87,13 @@ class PostControllerTest extends TestCase
         $oldData = [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->sentence(24),
-            'category' => $this->categories->random()->id
+            'category' => $this->categories->random()->id,
         ];
 
         $newData = [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->sentence(24),
-            'category' => $this->categories->random()->id
+            'category' => $this->categories->random()->id,
         ];
 
         $post = $this->user->posts()->create($oldData);
@@ -117,7 +117,7 @@ class PostControllerTest extends TestCase
     public function user_can_delete_a_post()
     {
         $post = Post::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->actingAs($this->user)
@@ -126,8 +126,5 @@ class PostControllerTest extends TestCase
         $this->assertDatabaseMissing('posts', $post->toArray());
 
         $response->assertRedirect(route('posts.index'));
-
     }
-
-
 }
