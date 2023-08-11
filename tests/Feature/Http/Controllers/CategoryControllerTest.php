@@ -3,14 +3,12 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Models\Category;
-use Tests\TestCase;
 use App\Models\User;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Category\EloquentCategoryRepository;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
-use Mockery\MockInterface;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CategoryControllerTest extends TestCase
 {
@@ -45,7 +43,7 @@ class CategoryControllerTest extends TestCase
     public function user_can_store_a_category()
     {
         $data = [
-            'name' => $this->faker->sentence(2)
+            'name' => $this->faker->sentence(2),
         ];
 
         $response = $this->actingAs($this->user)
@@ -59,11 +57,11 @@ class CategoryControllerTest extends TestCase
     public function user_can_update_a_category()
     {
         $oldData = [
-            'name' => $this->faker->sentence(2)
+            'name' => $this->faker->sentence(2),
         ];
 
         $newData = [
-            'name' => $this->faker->sentence(2)
+            'name' => $this->faker->sentence(2),
         ];
 
         $category = Category::factory()->create($oldData);
@@ -81,7 +79,7 @@ class CategoryControllerTest extends TestCase
     public function user_can_delete_a_category()
     {
         $category = Category::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->actingAs($this->user)

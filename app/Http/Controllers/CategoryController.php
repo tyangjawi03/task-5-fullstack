@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\Category;
 use App\Repositories\Category\CategoryRepository;
 
 class CategoryController extends Controller
@@ -24,7 +24,7 @@ class CategoryController extends Controller
     public function index()
     {
         return view('category.index', [
-            'categories' => $this->repository->all()
+            'categories' => $this->repository->all(),
         ]);
     }
 
@@ -76,6 +76,7 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         $this->repository->updateCategory($category, $request->validated());
+
         return redirect()->route('categories.index');
     }
 

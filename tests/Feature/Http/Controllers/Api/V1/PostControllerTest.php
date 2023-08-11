@@ -2,17 +2,17 @@
 
 namespace Tests\Feature\Http\Controllers\Api\V1;
 
-use Tests\TestCase;
+use App\Http\Middleware\Authenticate;
+use App\Models\Category;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\Category;
-use App\Http\Middleware\Authenticate;
-use App\Repositories\Post\PostRepository;
-use Illuminate\Foundation\Testing\WithFaker;
 use App\Repositories\Category\CategoryRepository;
-use App\Repositories\Post\EloquentPostRepository;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Repositories\Category\EloquentCategoryRepository;
+use App\Repositories\Post\EloquentPostRepository;
+use App\Repositories\Post\PostRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class PostControllerTest extends TestCase
 {
@@ -20,6 +20,7 @@ class PostControllerTest extends TestCase
     use WithFaker;
 
     protected $user;
+
     protected $categories;
 
     protected function setUp(): void
@@ -35,7 +36,6 @@ class PostControllerTest extends TestCase
         $this->app->bind(PostRepository::class, EloquentPostRepository::class);
     }
 
-
     /** @test */
     public function user_can_get_list_of_posts()
     {
@@ -46,7 +46,7 @@ class PostControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonFragment([
-            'title' => $posts->random()->title
+            'title' => $posts->random()->title,
         ]);
     }
 
@@ -61,7 +61,7 @@ class PostControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment([
             'title' => $post->title,
-            'content' => $post->content
+            'content' => $post->content,
         ]);
     }
 
@@ -71,7 +71,7 @@ class PostControllerTest extends TestCase
         $data = [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->sentence(24),
-            'category' => $this->categories->random()->id
+            'category' => $this->categories->random()->id,
         ];
 
         $response = $this->actingAs($this->user)
@@ -87,7 +87,7 @@ class PostControllerTest extends TestCase
         $response->assertCreated();
         $response->assertJsonFragment([
             'title' => $data['title'],
-            'content' => $data['content']
+            'content' => $data['content'],
         ]);
     }
 
@@ -97,13 +97,13 @@ class PostControllerTest extends TestCase
         $oldData = [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->sentence(24),
-            'category' => $this->categories->random()->id
+            'category' => $this->categories->random()->id,
         ];
 
         $newData = [
             'title' => $this->faker->sentence(),
             'content' => $this->faker->sentence(24),
-            'category' => $this->categories->random()->id
+            'category' => $this->categories->random()->id,
         ];
 
         $post = $this->user->posts()->create($oldData);
@@ -123,7 +123,7 @@ class PostControllerTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment([
             'title' => $newData['title'],
-            'content' => $newData['content']
+            'content' => $newData['content'],
         ]);
     }
 
@@ -131,7 +131,7 @@ class PostControllerTest extends TestCase
     public function user_can_delete_a_post()
     {
         $post = Post::factory()->create([
-            'user_id' => $this->user->id
+            'user_id' => $this->user->id,
         ]);
 
         $response = $this->actingAs($this->user)
@@ -141,8 +141,5 @@ class PostControllerTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonFragment(['OK']);
-
     }
-
-
 }
